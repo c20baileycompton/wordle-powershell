@@ -1,9 +1,5 @@
 <#
 WORDLE
-1st Lt Bailey Compton
-2nd Lt Andrew Empeno
-2nd Lt Mitchell Milliken
-
 This game asks the player to guess a five-letter word, and indicates if any letters
 in the guessed word are in the goal word, and whether or not they are in the correct position.
 
@@ -20,7 +16,7 @@ function init {
 } 
 
 function displayMenu([string]$title,[array]$MenuItems){
-    $title = "|`t  WELCOME TO WORDLE `t`t|`n|`tHosted by`t`t`t`t`t|`n|`t1st Lt Bailey Compton`t`t|`n|`t2nd Lt Andrew Empeno`t`t|`n|`t2nd Lt Mitchell Milliken`t|"
+    $title = "|`t  WELCOME TO WORDLE `t`t|`n|`tHosted by`t`t`t`t`t|`n|`tThe Bottom Third`t|"
     $MenuItems = @("|`t1. Play `t`t`t`t`t|",`
                    "`n|`t2. Instructions`t`t`t`t|",`
                    "`n|`t3. Exit Powershell`t`t`t|") -join ''
@@ -70,6 +66,7 @@ Function Play([string]$goalword, [array]$validwords){
     $wordguessed = 0
     $guesses = @()
     $colors = @()
+    $goalword
     while(-not $wordguessed -and $guesses.Count -lt 6){
         write-host
         $guess = Read-Host "Enter your guess".Trim()
@@ -132,17 +129,40 @@ function letterColors([string]$guess, [string]$goal){
 
     for($i=0;$i -lt 5;$i++){
         if($goal.Contains($guess[$i])){
+            $goalcount = $goal.Split($guess[$i]).Count - 1
+            $guesscountsofar = $guess.Substring(0,$i+1).Split($guess[$i]).Count -1
+            write-host "goal"
+            write-host $goalcount
+            write-host "guess"
+            write-host $guesscountsofar
             if($goal[$i] -eq $guess[$i]){
                 $colors += , "GREEN"
             }else{
-                 $colors += , "YELLOW"
+                if($goalcount -ge $guesscountsofar){
+                    $colors += , "YELLOW"
+                }
+                else{
+                    $colors += "GRAY"
+                }
             }
         }else{
             $colors += , "GRAY"
         }
     }
 
-    # write-host $colors
+    # for($i=0;$i -lt 5;$i++){
+    #     if($goal.Contains($guess[$i])){
+    #         if($goal[$i] -eq $guess[$i]){
+    #             $colors += , "GREEN"
+    #         }else{
+    #              $colors += , "YELLOW"
+    #         }
+    #     }else{
+    #         $colors += , "GRAY"
+    #     }
+    # }
+
+    write-host $colors
     return $colors
 }
 
@@ -179,7 +199,7 @@ function goodbye(){
 
 function main(){
     $goal, $valid = importWords
-    init
+    # init
     do{
         displayMenu
         $menuChoice = chooseMenuItem
